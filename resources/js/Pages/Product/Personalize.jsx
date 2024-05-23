@@ -13,12 +13,10 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
         selectedSizes: [],
         selectedColors: [],
     });
-
     const onSubmit = (e) => {
         e.preventDefault();
         post(route("cart.store"));
     }
-
     const handleSelectionChange = (type, value) => {
         setData(prevFormData => ({
             ...prevFormData,
@@ -32,9 +30,20 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             } else {
                 setSelectedImage(null);
             }
+
+            if (value !== "" && data.size_id !== "") {
+                setData(prevFormData => ({
+                    ...prevFormData,
+                    showLink: true,
+                }));
+            } else {
+                setData(prevFormData => ({
+                    ...prevFormData,
+                    showLink: false,
+                }));
+            }
         }
     };
-
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value);
         setData(prevFormData => ({
@@ -42,7 +51,6 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             quantity: value,
         }));
     };
-
     const decreaseQuantity = () => {
         if (data.quantity > 1) {
             setData({
@@ -51,14 +59,12 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             });
         }
     };
-
     const increaseQuantity = () => {
         setData({
             ...data,
             quantity: data.quantity + 1,
         });
     };
-
     useEffect(() => {
         if (selectedColor === null) {
             const firstColor = colors[0];
@@ -67,17 +73,25 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             }
         }
     }, [selectedColor, selectedImage]);
-    
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Personalizar" />
             <section className="relative mt-16">
-                <div className="w-full px-4 sm:px-6 sm:px-0 my-6">
+                <div className="w-full px-4 sm:px-6 my-6">
                     <div className="grid sm:grid-cols-2">
                         <div className="img flex items-left w-96 mx-auto mb-5">
-                            <div className="img-box bg-white-200 hover:bg-gray-100 w-96 h-96 mx-auto my-auto rounded-lg shadow-lg overflow-hidden">
+                            <div className="img-box bg-white-200 hover:bg-gray-100 w-96 h-96 mx-auto my-auto rounded-lg shadow-lg overflow-hidden relative">
                                 {selectedImage !== null ? (
-                                    <img src={'/storage/' + selectedImage} alt={selectedImage} className="object-cover my-auto mx-auto h-full" />
+                                    <>
+                                        {data.showLink && (
+                                            <a href="" className="absolute top-0 left-0 mt-2 mr-2">
+                                                <span className="bg-emerald-700 text-white text-md font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-emerald-400 border border-emerald-600">
+                                                    AÑADIR DISEÑO
+                                                </span>
+                                            </a>
+                                        )}
+                                        <img src={'/storage/' + selectedImage} alt={selectedImage} className="object-cover my-auto mx-auto h-full" />
+                                    </>
                                 ) : (
                                     <div className="bg-red-500 py-2 px-4 text-white text-center rounded-lg mt-16">
                                         <p>NO DISPONIBLE EN ESTE MOMENTO.</p>

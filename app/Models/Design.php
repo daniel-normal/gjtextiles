@@ -29,5 +29,8 @@ class Design extends Model
      */
     protected $fillable = ['name', 'image', 'technique'];
 
-
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

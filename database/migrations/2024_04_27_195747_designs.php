@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('designs', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('name', 100)->nullable()->default('');
             $table->string('image', 250)->nullable()->default('');

@@ -89,5 +89,9 @@ class Product extends Model
     {
         return $this->hasMany(\App\Models\SizesProduct::class, 'id', 'product_id');
     }
-    
+
+    public function design()
+    {
+        return $this->belongsTo(Design::class);
+    }
 }
