@@ -22,9 +22,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->integer('price')->unsigned()->nullable()->default();
             $table->integer('stock')->unsigned()->nullable()->default();
-            $table->bigInteger('design_id')->unsigned();
             $table->timestamps();
-            $table->foreign('design_id')->references('id')->on('designs')->onDelete('cascade');
         });
     }
 
