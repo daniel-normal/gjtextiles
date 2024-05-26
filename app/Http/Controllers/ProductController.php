@@ -19,6 +19,7 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Requests\SizesProductRequest;
 use App\Http\Requests\ColorsProductRequest;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -43,6 +44,10 @@ class ProductController extends Controller
     {
         $query = Product::query();
         $searchTerm = $request->input('search');
+        $categoryName = $request->input('category');
+        $sleeveType = $request->input('sleeve');
+        $filter = $request->input('filter');
+
         if ($searchTerm) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
@@ -52,7 +57,26 @@ class ProductController extends Controller
                     ->orWhere('sleeve', 'like', '%' . $searchTerm . '%');
             });
         }
+
+        if ($categoryName) {
+            $query->whereHas('categories', function ($query) use ($categoryName) {
+                $query->where('name', $categoryName);
+            })->doesntHave('categories', 'and', function ($query) use ($categoryName) {
+                $query->where('name', '<>', $categoryName);
+            });
+        }
+
+        if ($sleeveType) {
+            $query->where('sleeve', $sleeveType);
+        }
+
+        if ($filter === 'newest') {
+            $oneWeekAgo = Carbon::now()->subWeek();
+            $query->where('created_at', '>=', $oneWeekAgo);
+        }
+
         $products = $query->with('colors', 'images')->paginate(15)->onEachSide(1);
+
         return inertia("Product/Catalog", [
             "products" => ProductResource::collection($products),
             "searchTerm" => $searchTerm,

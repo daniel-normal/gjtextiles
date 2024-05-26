@@ -47,14 +47,48 @@ class DesignController extends Controller
     public function store(StoreDesignRequest $request)
     {
         $data = $request->validated();
-        
+        $image = null;
+        $design = null;
+
         if ($request->hasFile('image')) {
             $image = $request->file('image')->store('designs', 'public');
             $data['image'] = $image;
         }
 
-        Design::create($data);
+        if ($request->has('price')) {
+            $data['price'] = $request->input('price');
+        }
 
+        if ($request->has('technique')) {
+            $data['technique'] = $request->input('technique');
+        }
+
+        $design = Design::create($data);
+
+        if ($design) {
+            return response()->json([
+                'id' => $design->id,
+                'price' => $request->input('price'),
+                'image' => $image
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Error al crear el diseño.'
+            ], 500);
+        }
+    }
+
+    public function store_admin(StoreDesignRequest $request)
+    {
+        $data = $request->validated();
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('designs', 'public');
+            $data['image'] = $image;
+        }
+        if ($request->has('price')) {
+            $data['price'] = $request->input('price');
+        }
+        Design::create($data);
         return to_route('design.index')
             ->with('success', 'Diseño registrado exitosamente.');
     }

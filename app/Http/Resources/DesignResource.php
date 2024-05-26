@@ -18,6 +18,7 @@ class DesignResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'price' => $this->price,
             'image' => $this->image && !(str_starts_with($this->image, 'http')) ?
             Storage::url($this->image) : $this->image,
             'technique' => $this->technique,

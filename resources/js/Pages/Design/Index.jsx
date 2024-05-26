@@ -31,6 +31,7 @@ export default function Index({ auth, designs, success }) {
                                 <thead className="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                     <tr className="text-nowrap">
                                         <th className="px-3 py-2">Nombre</th>
+                                        <th className="px-3 py-2">Precio</th>
                                         <th className="px-3 py-2">Imagen</th>
                                         <th className="px-3 py-2">Técnica</th>
                                         <th className="px-3 py-2">Opciones</th>
@@ -41,6 +42,9 @@ export default function Index({ auth, designs, success }) {
                                         <tr className="bg-white border-b-1 dark:bg-gray-800 dark:border-gray-700">
                                             <td className="px-3 py-2">
                                                 {design.name}
+                                            </td>
+                                            <td className="px-3 py-2">
+                                                Bs. {design.price}
                                             </td>
                                             <td className="px-3 py-2">
                                                 <img src={design.image} alt={design.image} width={100} />

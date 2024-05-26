@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('product', ProductController::class);
     Route::resource('design', DesignController::class);
+    Route::post('design/store_admin', [DesignController::class, 'store_admin'])->name('design.store_admin');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizeController::class);
     Route::resource('category', CategoryController::class);

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property $id
  * @property $name
+ * @property $price
  * @property $image
  * @property $technique
  * @property $created_at
@@ -27,10 +28,10 @@ class Design extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'image', 'technique'];
+    protected $fillable = ['name', 'price', 'image', 'technique'];
 
-    public function products()
+    public function cartItems()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(CartItem::class);
     }
 }
