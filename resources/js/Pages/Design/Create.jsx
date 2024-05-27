@@ -25,14 +25,14 @@ export default function Create({ auth }) {
       <Head title="Nuevo Diseño" />
 
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 shadow-lg">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <form onSubmit={onSubmit}
                 className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div>
                     <InputLabel 
                     htmlFor="design_name"
-                    value="Nombre"
+                    value="Nombre *"
                     />
                     <TextInput
                     id="design_name"
@@ -52,7 +52,7 @@ export default function Create({ auth }) {
                 <div className="mt-4">
                     <InputLabel 
                     htmlFor="design_price"
-                    value="Precio"
+                    value="Precio *"
                     />
                     <TextInput
                     id="design_price"
@@ -72,7 +72,7 @@ export default function Create({ auth }) {
                 <div className="mt-4">
                     <InputLabel 
                     htmlFor="design_image"
-                    value="Imagen"
+                    value="Imagen *"
                     />
                     <TextInput
                     id="design_image"
@@ -90,7 +90,7 @@ export default function Create({ auth }) {
                 <div className="mt-4">
                     <InputLabel 
                     htmlFor="product_technique"
-                    value="Técnica"
+                    value="Técnica *"
                     />
                     <SelectInput
                     name="technique"
@@ -109,7 +109,7 @@ export default function Create({ auth }) {
                 </div>
 
                 <div className="mt-4 text-right">
-                    <Link href={route("product.index")}
+                    <Link href={route("design.index")}
                     className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                     >
                         CANCELAR

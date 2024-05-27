@@ -60,7 +60,6 @@ export default function Create({ auth, colors, sizes, categories }){
             const response = await axios.post(route("color.store"), { color: data.color });
             const newColor = response.data;
             colors.push(newColor);
-            window.location.reload();
             closeModal();
         } catch (error) {
             console.error(error);
@@ -97,7 +96,7 @@ export default function Create({ auth, colors, sizes, categories }){
             <div className="py-5">
                 <div className=" dark:bg-gray-800 overflow-hidden sm:rounded-lg mx-10 shadow-lg">
                     <form onSubmit={onSubmit}
-                    className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">  
                         <div>
                             <InputLabel 
                             htmlFor="product_name"

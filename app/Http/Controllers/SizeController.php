@@ -33,6 +33,7 @@ class SizeController extends Controller
         $size = new Size();
         $size->name = $request->input('size');
         $size->save();
+        return response()->json(['name' => $size->name], 201);
     }
 
     /**

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDesignRequest;
 use App\Http\Requests\UpdateDesignRequest;
 use App\Http\Resources\DesignResource;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class DesignController extends Controller
@@ -23,9 +25,19 @@ class DesignController extends Controller
         }
         
         $query = Design::query();
-        $designs = $query->paginate(10)->onEachSide(1);
+
+        $sortField = request("sort_field", 'created_at');
+        $sortDirection = request("sort_direction", "desc");
+
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        $designs = $query->orderBy($sortField, $sortDirection)->paginate(10)->onEachSide(1);
+
         return inertia("Design/Index", [
             "designs" => DesignResource::collection($designs),
+            'queryParams' => request()->query() ?: null,
             'success' => session('success'),
         ]);
     }
@@ -63,6 +75,8 @@ class DesignController extends Controller
             $data['technique'] = $request->input('technique');
         }
 
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
         $design = Design::create($data);
 
         if ($design) {
@@ -80,14 +94,20 @@ class DesignController extends Controller
 
     public function store_admin(StoreDesignRequest $request)
     {
+        $user = auth()->user();
+
+        if ($user->role !== 'ADMIN') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+
         $data = $request->validated();
         if ($request->hasFile('image')) {
             $image = $request->file('image')->store('designs', 'public');
             $data['image'] = $image;
         }
-        if ($request->has('price')) {
-            $data['price'] = $request->input('price');
-        }
+
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
         Design::create($data);
         return to_route('design.index')
             ->with('success', 'Diseño registrado exitosamente.');
@@ -101,20 +121,55 @@ class DesignController extends Controller
         return $design;
     }
 
+
+    public function edit(Design $design)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'ADMIN') {
+            abort(403, 'No tienes permiso para acceder a esta página.');
+        }
+
+        return inertia('Design/Edit', [
+            'design' => new DesignResource($design),
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateDesignRequest $request, Design $design)
     {
-        $design->update($request->validated());
+        $data = $request->validated();
+        $data['updated_by'] = Auth::id();
 
-        return $design;
+        if ($request->hasFile('image')) {
+            if ($design->image) {
+                Storage::disk('public')->delete($design->image);
+            }
+            $image = $request->file('image')->store('designs', 'public');
+            $data['image'] = $image;
+        } else {
+            unset($data['image']);
+        }
+
+        $design->update($data);
+
+        return to_route('design.index')
+            ->with('success', 'Diseño actualizado exitosamente.');
     }
 
     public function destroy(Design $design)
     {
+        $name = $design->name;
+
         $design->delete();
 
-        return response()->noContent();
+        if ($design->image) {
+            Storage::disk('public')->delete($design->image);
+        }
+
+        return to_route('design.index')
+            ->with('success', "Diseño \"$name\" eliminado exitosamente.");
     }
 }

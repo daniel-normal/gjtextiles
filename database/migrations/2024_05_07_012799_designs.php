@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name', 100)->nullable()->default('');
             $table->string('image', 250)->nullable()->default('');
             $table->enum('technique', ['SUBLIMACIÓN', 'SERIGRAFÍA', 'BORDADO']);
+            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('updated_by')->constrained('users');
             $table->timestamps();
         });
     }
