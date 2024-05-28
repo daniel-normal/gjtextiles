@@ -92,8 +92,6 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                     </Dropdown.Trigger>
                                     <Dropdown.Content>
                                         <Dropdown.Link href="/product/catalog?category=MASCULINO">Todo Para Hombre</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Bordadas</Dropdown.Link>
-                                        <Dropdown.Link href="">Sublimado</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=CORTO">Camisetas Manga Corta</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=LARGO">Camisetas Manga Larga</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=3/4">Camisetas Manga 3/4</Dropdown.Link>
@@ -126,8 +124,6 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                     </Dropdown.Trigger>
                                     <Dropdown.Content>
                                         <Dropdown.Link href="/product/catalog?category=FEMENINO">Todo Para Mujer</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Bordadas</Dropdown.Link>
-                                        <Dropdown.Link href="">Sublimado</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=CORTO">Camisetas Manga Corta</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=LARGO">Camisetas Manga Larga</Dropdown.Link>
                                         <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=3/4">Camisetas Manga 3/4</Dropdown.Link>
