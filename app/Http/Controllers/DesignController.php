@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Design;
+use App\Models\Product;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDesignRequest;
 use App\Http\Requests\UpdateDesignRequest;
@@ -172,4 +173,24 @@ class DesignController extends Controller
         return to_route('design.index')
             ->with('success', "Diseño \"$name\" eliminado exitosamente.");
     }
+
+    public function list($id)
+    {
+        $product = Product::findOrFail($id);
+        $designsQuery = Design::query();
+        
+        $technique = request()->input('technique'); 
+
+        if ($technique) {
+            $designsQuery->where('technique', $technique);
+        }
+
+        $designs = $designsQuery->get();
+
+        return inertia('Design/List', [
+            'product' => $product,
+            'designs' => $designs,
+        ]);
+    }
+
 }

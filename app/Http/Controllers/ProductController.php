@@ -89,8 +89,11 @@ class ProductController extends Controller
         ]);
     }
 
-    public function personalize($id)
+    public function personalize($id, Request $request)
     {
+        $designDetails = $request->query('design_details');
+        $design = json_decode(urldecode($designDetails));
+
         $product = Product::with('sizes', 'colors.images')->findOrFail($id);
         $sizes = $product->sizes;
         $colors = $product->colors;
@@ -98,6 +101,7 @@ class ProductController extends Controller
             "product" => $product,
             "sizes" => $sizes,
             "colors" => $colors,
+            "design" => $design,
         ]);
     }
 

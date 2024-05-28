@@ -1,10 +1,10 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/Components/Modal';
 import axios from 'axios';
 
-export default function Personalize({ auth, user, product, sizes, colors }) {
+export default function Personalize({ auth, user, product, sizes, colors, design }) {
     const [showButtons, setshowButtons] = useState(false);
     const [showFileInput, setShowFileInput] = useState(false);
     const [confirmingDesign, setDesign] = useState(false);
@@ -46,6 +46,15 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
         setShowFileInput(!showFileInput);
     };
 
+    useEffect(() => {
+        if (design && design.id) {
+            setData(prevState => ({
+                ...prevState,
+                design_id: design.id
+            }));
+        }
+    }, [design]);
+
     const handleSelectionChange = (type, value) => {
         setData(prevFormData => ({
             ...prevFormData,
@@ -69,6 +78,11 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                     ...prevFormData,
                     showLink: false,
                 }));
+            }
+            if (selectedDesignId !== null) {
+                if(design){
+                    setSelectedDesignId(design.id);
+                }
             }
         }
     };
@@ -105,7 +119,6 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             }
         }
     }, [selectedColor, selectedImage]);
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -188,9 +201,10 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                                     <input
                                         type="hidden"
                                         name="design_id"
-                                        value={selectedDesignId || ''}
+                                        value={design ? design.id : ''}
                                         onChange={(e) => setData("design_id", e.target.value)}
                                     />
+
                                     <p className="text-gray-900 text-md font-medium"><b>Talla</b></p>
                                     <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
                                         <div className="grid grid-cols-3 min-[300px]:grid-cols-5 gap-3">
@@ -226,12 +240,18 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
-                                    {newDesignImage ? (
+
+                                    {newDesignImage || design ? (
                                         <>
                                             <p className="text-gray-900 text-md font-medium"><b>Diseño</b></p>
                                             &nbsp;
                                             <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
-                                                <img src={'/storage/' + newDesignImage} alt="Nuevo diseño" width={60} />
+                                                {newDesignImage && (
+                                                    <img src={'/storage/' + newDesignImage} alt="Nuevo diseño" width={60} />
+                                                )}
+                                                {design && (
+                                                    <img src={'/storage/' + design.image} alt="Diseño existente" width={60} />
+                                                )}
                                             </div>
                                         </>
                                     ) : (
@@ -248,12 +268,12 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                                                     </button>
                                                 </div>
                                                 <div className="flex sm:items-center sm:justify-center w-full">
-                                                    <button
-                                                        type="button"
-                                                        className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2"
+                                                    <Link
+                                                        href={route("design.list", { id: product.id })}
+                                                        className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2 text-center"
                                                     >
                                                         VER DISEÑOS
-                                                    </button>
+                                                    </Link>
                                                 </div>
                                             </>
                                         ) : (
@@ -276,13 +296,23 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                                         <p className="text-gray-900 text-md font-medium"><b>Detalles</b></p>
                                         <div className="w-full pb-2 border-b border-gray-100 flex-wrap">
                                             <h6>Precio Unitario: Bs. {product.price}</h6>
-                                            {responsePrice && (
+                                            {responsePrice || design && (
                                                 <>
-                                                    <p>Precio Extra: Bs. {responsePrice}</p>
-                                                    <h6>Precio Total: <b>Bs. {product.price * data.quantity + parseFloat(responsePrice)}</b></h6>
+                                                    {responsePrice && (
+                                                        <>
+                                                            <p>Precio Extra: Bs. {responsePrice}</p>
+                                                            <h6>Precio Total: <b>Bs. {product.price * data.quantity + parseFloat(responsePrice)}</b></h6>
+                                                        </>
+                                                    )}
+                                                    {design && (
+                                                        <>
+                                                            <p>Precio Extra: Bs. {design.price}</p>
+                                                            <h6>Precio Total: <b>Bs. {product.price * data.quantity + parseFloat(design.price)}</b></h6>
+                                                        </>
+                                                    )}
                                                 </>
                                             )}
-                                            {!responsePrice && (
+                                            {!responsePrice || !design && (
                                                 <h6>Precio Total: <b>Bs. {product.price * data.quantity}</b></h6>
                                             )}
                                         </div>

@@ -26,6 +26,7 @@ Route::get('/product/catalog', [ProductController::class, 'catalog'])->name('pro
 Route::get('/product/personalize/{id}', [ProductController::class, 'personalize'])->name('product.personalize');
 Route::resource('cart', CartController::class);
 Route::resource('cart_item', CartItemController::class);
+Route::get('/designs/list/{id}', [DesignController::class, 'list'])->name('design.list');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('product', ProductController::class);
